@@ -13,17 +13,27 @@ class _ChatScreenState extends State<ChatScreen> {
   
   final TextEditingController _controller=TextEditingController();
   final List<ChatMessage> _messages=[];
+  void _sendMessage(){
+    ChatMessage _message=ChatMessage(text: _controller.text, sender: "user");
+
+    setState(() {
+      _messages.insert(0, _message);
+    });
+
+    _controller.clear();
+  }
 
   Widget _buildTextComposer(){
     return Row(
       children: [
         Expanded(child: TextField(
           controller: _controller,
+        onSubmitted: (value) => _sendMessage(),
         decoration: const InputDecoration.collapsed(hintText: "Send a message"),
         )
         ),
-        IconButton
-          (onPressed: (){},
+        IconButton(
+            onPressed: ()=> _sendMessage(),
             icon: const Icon(Icons.send)
         )
       ],
