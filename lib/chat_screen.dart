@@ -16,7 +16,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<ChatMessage> _messages = [];
-  OpenAI? chatGPT;
+  late OpenAI? chatGPT;
   bool _isImageSearch = false;
 
   bool _isTyping = false;
@@ -24,8 +24,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     chatGPT = OpenAI.instance.build(
-        token:  dotenv.env["https://beta.openai.com/account/"],
-        baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 60000)),isLogger: true);
+        token: dotenv.env["https://beta.openai.com/account/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"],
+        baseOption: HttpSetup(receiveTimeout: Duration(seconds: 60000)));
     super.initState();
   }
 
@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       insertNewData(response.data!.last!.url!, isImage: true);
     } else {
       final request =
-      CompleteText(prompt: message.text, model: kChatGptTurbo0301Model);
+      CompleteText(prompt: message.text, model: kGenerateImage);
 
       final response = await chatGPT!.onCompletion(request: request);
       Vx.log(response!.choices[0].text);
@@ -73,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
     ChatMessage botMessage = ChatMessage(
       text: response,
       sender: "bot",
-      isImage: false,
+      isImage: isImage,
     );
 
     setState(() {
