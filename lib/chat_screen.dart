@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       insertNewData(response.data!.last!.url!, isImage: true);
     } else {
       final request =
-      CompleteText(prompt: message.text, model: kChatGptTurboModel);
+      CompleteText(prompt: message.text, model: kChatGptTurbo0301Model);
 
       final response = await chatGPT!.onCompletion(request: request);
       Vx.log(response!.choices[0].text);
