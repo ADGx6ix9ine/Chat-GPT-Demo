@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     chatGPT = OpenAI.instance.build(
-        token: dotenv.env["https://beta.openai.com/account/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"],
+        token: dotenv.env["API_KEY"],
         baseOption: HttpSetup(receiveTimeout: Duration(seconds: 60000)));
     super.initState();
   }
@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       insertNewData(response.data!.last!.url!, isImage: true);
     } else {
       final request =
-      CompleteText(prompt: message.text, model: kGenerateImage);
+      CompleteText(prompt: message.text, model: kChatGptTurboModel);
 
       final response = await chatGPT!.onCompletion(request: request);
       Vx.log(response!.choices[0].text);
@@ -117,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("ChatGPT & Dall-E2 Demo")),
+        appBar: AppBar(title: const Text("ChatGPT Demo")),
         body: SafeArea(
           child: Column(
             children: [
