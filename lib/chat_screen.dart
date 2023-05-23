@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     chatGPT = OpenAI.instance.build(
         token: dotenv.env["API_KEY"],
-        baseOption: HttpSetup(receiveTimeout: Duration(seconds: 60000)));
+        baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 6)));
     super.initState();
   }
 
@@ -60,12 +60,13 @@ class _ChatScreenState extends State<ChatScreen> {
       Vx.log(response!.data!.last!.url!);
       insertNewData(response.data!.last!.url!, isImage: true);
     } else {
-      final request =
-      CompleteText(prompt: message.text, model: kChatGptTurbo0301Model);
+          final request = ChatCompleteText(messages: [
+        Map.of({"role": "user", "content": message.text})
+      ], maxToken: 200, model: kChatGptTurbo0301Model);
 
-      final response = await chatGPT!.onCompletion(request: request);
-      Vx.log(response!.choices[0].text);
-      insertNewData(response.choices[0].text, isImage: false);
+      final response = await chatGPT!.onChatCompletion(request: request);
+      Vx.log(response!.choices[0].message.content);
+      insertNewData(response.choices[0].message.content, isImage: false);
     }
   }
 
