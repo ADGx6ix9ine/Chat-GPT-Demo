@@ -25,8 +25,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     chatGPT = OpenAI.instance.build(
         token: dotenv.env["API_KEY"],
-        baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 6),
-            connectTimeout: const Duration(seconds: 60)));
+        baseOption: HttpSetup(
+          receiveTimeout: const Duration(seconds: 100),
+        ));
     super.initState();
   }
 
@@ -61,9 +62,9 @@ class _ChatScreenState extends State<ChatScreen> {
       Vx.log(response!.data!.last!.url!);
       insertNewData(response.data!.last!.url!, isImage: true);
     } else {
-          final request = ChatCompleteText(messages: [
+      final request = ChatCompleteText(messages: [
         Map.of({"role": "user", "content": message.text})
-      ], maxToken: 200, model: kChatGptTurbo0301Model);
+      ], maxToken: 4000, model: kChatGptTurbo0301Model);
 
       final response = await chatGPT!.onChatCompletion(request: request);
       Vx.log(response!.choices[0].message.content);
@@ -125,13 +126,13 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Flexible(
                   child: ListView.builder(
-                    reverse: true,
-                    padding: Vx.m8,
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      return _messages[index];
-                    },
-                  )),
+                reverse: true,
+                padding: Vx.m8,
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  return _messages[index];
+                },
+              )),
               if (_isTyping) const ThreeDots(),
               const Divider(
                 height: 1.0,
